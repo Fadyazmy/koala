@@ -1,7 +1,9 @@
-package com.tree.koala;
+package com.tree.koala.Controllers;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.tree.koala.R;
 
 public class VaultListActivity extends AppCompatActivity {
 
