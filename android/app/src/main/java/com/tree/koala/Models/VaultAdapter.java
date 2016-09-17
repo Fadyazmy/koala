@@ -1,4 +1,4 @@
-package com.tree.koala.models;
+package com.tree.koala.Models;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
