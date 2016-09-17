@@ -1,4 +1,4 @@
-package com.tree.koala.Models;
+package com.tree.koala.models;
 
 import android.location.Location;
 

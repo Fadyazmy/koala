@@ -1,4 +1,4 @@
-package com.tree.koala.Models;
+package com.tree.koala.models;
 
 /**
  * Created by Jashan Shewakramani

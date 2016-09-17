@@ -31,4 +31,7 @@ dependencies {
     compile('com.mikepenz:fastadapter:1.8.2@aar') {
         transitive = true
     }
+
+    compile 'com.squareup.okhttp3:okhttp:3.4.1'
+
 }

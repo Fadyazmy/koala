@@ -1,6 +1,4 @@
-package com.tree.koala.Models;
-
-import java.util.ArrayList;
+package com.tree.koala.models;
 
 /**
  * Created by Jashan Shewakramani
