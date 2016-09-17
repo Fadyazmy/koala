@@ -24,9 +24,9 @@
         <category android:name="android.intent.category.LAUNCHER"/>
       </intent-filter>
     </activity>
-    <activity android:name=".Controllers.CreateVaultActivity">
-    </activity>
-    <activity android:name=".Controllers.VaultContentActivity">
+    <activity
+        android:name=".Controllers.CreateVaultActivity"
+        android:screenOrientation="portrait">
     </activity>
     <activity android:name=".Controllers.BrowseVaultActivity">
     </activity>
