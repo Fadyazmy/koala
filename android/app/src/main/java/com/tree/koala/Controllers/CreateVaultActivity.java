@@ -27,6 +27,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.tree.koala.R;
+import com.tree.koala.utils.Constants;
 import com.tree.koala.utils.LocationUtils;
 
 import java.io.IOException;
@@ -53,7 +54,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    MapboxAccountManager.start(this, "pk.eyJ1IjoiamFzaGFuczk4IiwiYSI6ImNpdDc4YXJ1YTA3YW8yenAxZDRiM3I1dWIifQ.9cdUHw7KF4w06f2c0VFs7w");
+    MapboxAccountManager.start(this, Constants.MapboxToken);
     setContentView(R.layout.activity_create_vault);
 
     mLocationServices = LocationServices.getLocationServices(this);
