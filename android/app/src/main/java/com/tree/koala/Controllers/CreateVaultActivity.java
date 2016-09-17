@@ -8,8 +8,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -20,6 +22,7 @@ import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.tree.koala.R;
+import com.tree.koala.utils.LocationUtils;
 
 import java.io.IOException;
 
@@ -35,7 +38,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private MapView mMapView;
   private MapboxMap mMapboxMap;
   private Location mVaultLocation;
-
+  private TextView address;
   public static final int PERMISSION_REQ_CODE = 0;
 
   private LocationServices mLocationServices;
@@ -47,7 +50,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
     setContentView(R.layout.activity_create_vault);
 
     mLocationServices = LocationServices.getLocationServices(this);
-
+    address = (TextView) findViewById(R.id.create_vault_address);
     mMapView = (MapView) findViewById(R.id.create_vault_map);
     mMapView.onCreate(savedInstanceState);
     mMapView.getMapAsync(this);
@@ -116,13 +119,6 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private void registerVault() {
     Location lastLocation = mLocationServices.getLastLocation();
     updateMap(lastLocation);
-
-    mLocationServices.addLocationListener(new LocationListener() {
-      @Override
-      public void onLocationChanged(Location location) {
-        updateMap(location);
-      }
-    });
   }
 
   private void updateMap(Location location) {
@@ -134,8 +130,18 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
 
       mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(location))
               .title("Vault Location"));
+
+      try {
+        address.setText(LocationUtils.getAddressFromLocation(this, new LatLng(location)));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
     }
 
     mVaultLocation = location;
   }
+
+
+
 }
