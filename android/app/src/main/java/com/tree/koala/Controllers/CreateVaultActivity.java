@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
+import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.Style;
@@ -116,13 +117,6 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private void registerVault() {
     Location lastLocation = mLocationServices.getLastLocation();
     updateMap(lastLocation);
-
-    mLocationServices.addLocationListener(new LocationListener() {
-      @Override
-      public void onLocationChanged(Location location) {
-        updateMap(location);
-      }
-    });
   }
 
   private void updateMap(Location location) {
