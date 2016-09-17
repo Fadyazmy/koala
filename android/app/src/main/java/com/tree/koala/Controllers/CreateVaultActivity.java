@@ -34,6 +34,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
       = MediaType.parse("application/json; charset=utf-8");
   private MapView mMapView;
   private MapboxMap mMapboxMap;
+  private Location mVaultLocation;
 
   public static final int PERMISSION_REQ_CODE = 0;
 
@@ -113,19 +114,28 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   }
 
   private void registerVault() {
+    Location lastLocation = mLocationServices.getLastLocation();
+    updateMap(lastLocation);
+
     mLocationServices.addLocationListener(new LocationListener() {
       @Override
       public void onLocationChanged(Location location) {
-        if (location != null) {
-          mMapboxMap.setCameraPosition(new CameraPosition.Builder()
-                  .target(new LatLng(location))
-                  .zoom(16)
-                  .build());
-
-          mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(location))
-                  .title("Vault Location"));
-        }
+        updateMap(location);
       }
     });
+  }
+
+  private void updateMap(Location location) {
+    if (location != null) {
+      mMapboxMap.setCameraPosition(new CameraPosition.Builder()
+              .target(new LatLng(location))
+              .zoom(16)
+              .build());
+
+      mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(location))
+              .title("Vault Location"));
+    }
+
+    mVaultLocation = location;
   }
 }
