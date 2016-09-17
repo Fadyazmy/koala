@@ -2,12 +2,17 @@ package com.tree.koala.Controllers;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
@@ -25,6 +30,8 @@ import com.tree.koala.R;
 import com.tree.koala.utils.LocationUtils;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -38,7 +45,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private MapView mMapView;
   private MapboxMap mMapboxMap;
   private Location mVaultLocation;
-  private TextView address;
+  private TextView mAddressView;
   public static final int PERMISSION_REQ_CODE = 0;
 
   private LocationServices mLocationServices;
@@ -50,10 +57,22 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
     setContentView(R.layout.activity_create_vault);
 
     mLocationServices = LocationServices.getLocationServices(this);
-    address = (TextView) findViewById(R.id.create_vault_address);
+    mAddressView = (TextView) findViewById(R.id.address_text);
     mMapView = (MapView) findViewById(R.id.create_vault_map);
     mMapView.onCreate(savedInstanceState);
     mMapView.getMapAsync(this);
+  }
+
+  @Override
+  public boolean onCreateOptionsMenu(Menu menu) {
+    MenuInflater inflater = getMenuInflater();
+    inflater.inflate(R.menu.create_vault_menu, menu);
+    return true;
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(MenuItem item) {
+    return super.onOptionsItemSelected(item);
   }
 
   @Override
@@ -131,13 +150,20 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
       mMapboxMap.addMarker(new MarkerOptions().position(new LatLng(location))
               .title("Vault Location"));
 
+      Geocoder geocoder = new Geocoder(this, Locale.getDefault());
       try {
-        address.setText(LocationUtils.getAddressFromLocation(this, new LatLng(location)));
+        List<Address> addressList =
+                geocoder.getFromLocation(location.getLatitude(), location.getLongitude(), 1);
+        if (addressList != null) {
+          Address address = addressList.get(0);
+          mAddressView.setText(address.getAddressLine(0));
+        }
       } catch (IOException e) {
         e.printStackTrace();
       }
-
     }
+
+
 
     mVaultLocation = location;
   }
