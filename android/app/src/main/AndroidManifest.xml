@@ -28,6 +28,8 @@
     </activity>
     <activity android:name=".Controllers.VaultContentActivity">
     </activity>
+    <activity android:name=".Controllers.BrowseVaultActivity">
+    </activity>
   </application>
 
 </manifest>
