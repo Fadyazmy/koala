@@ -1,6 +1,7 @@
 package com.tree.koala.utils;
 
 import android.location.Location;
+import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +14,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.okhttp.Response;
+import com.tree.koala.Controllers.CreateVaultActivity;
 import com.tree.koala.Controllers.VaultListActivity;
 import com.tree.koala.Models.Vault;
 import com.tree.koala.Models.VaultFile;
@@ -49,16 +51,17 @@ public class JsonUtils {
 
   public static boolean insertRecord(String username, String fileName,
                                      Location location, byte[] fileData, String type) {
-    JSONObject jsonObject = new JSONObject();
+    BasicDBObject jsonObject = new BasicDBObject();
     try {
       jsonObject.put("username", username);
       jsonObject.put("filename", fileName);
       jsonObject.put("location", location.getLatitude() + "|" + location.getLongitude());
       jsonObject.put("url", fileData);
-      jsonObject.put("type", type);
+      jsonObject.put("data", type);
 
       OkHttpClient client = new OkHttpClient();
       RequestBody requestBody = RequestBody.create(JSON_TYPE, jsonObject.toString());
+      Log.d(TAG, jsonObject.toString());
 
       Request request = new Request.Builder()
               .url(Constants.INSERT_VAULT_ENDPOINT)
@@ -68,18 +71,18 @@ public class JsonUtils {
       client.newCall(request).enqueue(new Callback() {
         @Override
         public void onFailure(Request request, IOException e) {
-          Log.d(TAG, e.getMessage());
+          Log.d(TAG, "Error");
         }
 
         @Override
         public void onResponse(Response response) throws IOException {
           if (response.isSuccessful())
-            Log.d(TAG, "Success!");
+            Log.d(TAG, "Successful response");
           else
-            Log.d(TAG, "Error on response");
+            Log.d(TAG, response.body().string());
         }
       });
-    } catch (JSONException e) {
+    } catch (Exception e) {
       e.printStackTrace();
     }
     return true;

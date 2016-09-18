@@ -113,7 +113,7 @@ public class VaultListActivity extends AppCompatActivity {
                 BasicDBList list = (BasicDBList) JSON.parse(response.body().string());
                 for (int i = 0; i < list.size(); i++) {
                     BasicDBObject entry = (BasicDBObject) list.get(i);
-                    if (entry.getString("filename").charAt(0) == '*') {
+                    if (entry.getString("filename") != null && entry.getString("filename").charAt(0) == '*') {
                         vaults.add(JsonUtils.entryToVault(entry));
                     }
                 }

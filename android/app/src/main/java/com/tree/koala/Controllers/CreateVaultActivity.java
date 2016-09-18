@@ -1,6 +1,7 @@
 package com.tree.koala.Controllers;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -93,6 +94,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
         final String username = "jashans";
         byte[] data = new byte[1]; // empty byte[] denotes data for vault
         JsonUtils.insertRecord(username, "*" + vaultName, location, data, "");
+        startActivity(new Intent(this, VaultListActivity.class));
       }
     }
     return true;

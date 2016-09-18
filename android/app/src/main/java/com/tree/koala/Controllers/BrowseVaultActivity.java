@@ -9,21 +9,42 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
+import com.mikepenz.fastadapter.FastAdapter;
+import com.mikepenz.fastadapter.adapters.FastItemAdapter;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.util.JSON;
+import com.squareup.okhttp.Callback;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.Response;
+import com.tree.koala.Models.VaultFile;
 import com.tree.koala.R;
 import com.tree.koala.utils.Constants;
 import com.tree.koala.utils.JsonUtils;
 
+import org.json.JSONArray;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class BrowseVaultActivity extends AppCompatActivity {
 
   FloatingActionButton mFloatingActionButton;
   public static final int FILE_SELECT_CODE = 4;
   private String vaultTitle;
+  private FastItemAdapter mAdapter;
+  private RecyclerView mFilesList;
+
+  public static final String TAG = BrowseVaultActivity.class.getSimpleName();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +55,11 @@ public class BrowseVaultActivity extends AppCompatActivity {
     if (getSupportActionBar() != null)
       getSupportActionBar().setTitle(vaultTitle);
     mFloatingActionButton = (FloatingActionButton) findViewById(R.id.upload_file_button);
+
+    mFilesList = (RecyclerView) findViewById(R.id.browse_files_recyclerview);
+    mAdapter = new FastItemAdapter();
+    mFilesList.setLayoutManager(new LinearLayoutManager(this));
+    mFilesList.setAdapter(mAdapter);
 
     mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -48,6 +74,45 @@ public class BrowseVaultActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException e) {
           e.printStackTrace();
         }
+      }
+    });
+
+    setupList();
+  }
+
+  private void setupList() {
+    OkHttpClient client = new OkHttpClient();
+
+    final ArrayList<VaultFile> vaultFiles = new ArrayList<>();
+
+    final Request request = new Request.Builder()
+            .url(Constants.FETCH_DATA_ENDPOINT)
+            .header("username", "jashans")
+            .build();
+
+    client.newCall(request).enqueue(new Callback() {
+      @Override
+      public void onFailure(Request request, IOException e) {
+        Log.d(TAG, e.getMessage());
+      }
+
+      @Override
+      public void onResponse(Response response) throws IOException {
+        if (response.isSuccessful())
+          Log.d(TAG, "success!");
+        BasicDBList list = (BasicDBList) JSON.parse(response.body().string());
+        for (int i = 0; i < list.size(); i++) {
+          BasicDBObject entry = (BasicDBObject) list.get(i);
+          if (entry.getString("filename") != null && entry.getString("filename").charAt(0) != '*')
+            vaultFiles.add(entryToVaultFile(entry));
+        }
+
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            mAdapter.add(vaultFiles);
+          }
+        });
       }
     });
   }
@@ -92,7 +157,7 @@ public class BrowseVaultActivity extends AppCompatActivity {
     }
     else if (scheme.equals("content")) {
       String[] proj = { MediaStore.Video.Media.TITLE };
-      Uri contentUri = null;
+      Uri contentUri = uri;
       Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
       if (cursor != null && cursor.getCount() != 0) {
         int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
@@ -101,5 +166,10 @@ public class BrowseVaultActivity extends AppCompatActivity {
       }
     }
     return fileName;
+  }
+
+  public VaultFile entryToVaultFile(BasicDBObject entry) {
+    VaultFile file = new VaultFile(entry.getString("filename"), (byte[]) entry.get("url"));
+    return file;
   }
 }
