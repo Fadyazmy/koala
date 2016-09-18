@@ -35,7 +35,8 @@
                 android:layout_margin="0dp"
                 android:layout_height="@dimen/card_map_height"
                 mapbox:attribution_enabled="false"
-                mapbox:logo_enabled="false"/>
+                mapbox:logo_enabled="false"
+                mapbox:scroll_enabled="false"/>
 
             <TextView
                 android:layout_width="wrap_content"

@@ -27,6 +27,9 @@
     <activity
         android:name=".Controllers.CreateVaultActivity"
         android:screenOrientation="portrait">
+      <meta-data
+          android:name="android.support.PARENT_ACTIVITY"
+          android:value="com.tree.koala.Controllers.VaultListActivity" />
     </activity>
     <activity android:name=".Controllers.BrowseVaultActivity">
     </activity>

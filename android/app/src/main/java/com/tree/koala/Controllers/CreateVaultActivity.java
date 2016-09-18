@@ -10,25 +10,23 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
-import com.mapbox.mapboxsdk.annotations.Marker;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
 import com.mapbox.mapboxsdk.camera.CameraPosition;
 import com.mapbox.mapboxsdk.constants.Style;
 import com.mapbox.mapboxsdk.geometry.LatLng;
-import com.mapbox.mapboxsdk.location.LocationListener;
 import com.mapbox.mapboxsdk.location.LocationServices;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.tree.koala.R;
 import com.tree.koala.utils.Constants;
-import com.tree.koala.utils.LocationUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,11 +49,22 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
 
   private LocationServices mLocationServices;
 
+  public static final String TAG = CreateVaultActivity.class.getSimpleName();
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    MapboxAccountManager.start(this, Constants.MapboxToken);
+    MapboxAccountManager.start(this, Constants.mapboxToken);
     setContentView(R.layout.activity_create_vault);
+
+
+    if (getSupportActionBar() != null) {
+      getSupportActionBar().setTitle("Create Vault");
+      getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+      getSupportActionBar().setDisplayShowHomeEnabled(true);
+    } else {
+      Log.d(TAG, "Support Action Bar is null");
+    }
 
     mLocationServices = LocationServices.getLocationServices(this);
     mAddressView = (TextView) findViewById(R.id.address_text);
@@ -139,6 +148,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private void registerVault() {
     Location lastLocation = mLocationServices.getLastLocation();
     updateMap(lastLocation);
+    // TODO: make network calls to the API to create the vault
   }
 
   private void updateMap(Location location) {
@@ -163,8 +173,6 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
         e.printStackTrace();
       }
     }
-
-
 
     mVaultLocation = location;
   }
