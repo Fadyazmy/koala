@@ -70,7 +70,7 @@ public class VaultListActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        mAdapter.onPause();
+        // mAdapter.onPause();
         super.onPause();
     }
 
@@ -104,12 +104,12 @@ public class VaultListActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                e.printStackTrace();
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
-                Toast.makeText(VaultListActivity.this, "got response", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(VaultListActivity.this, "got response", Toast.LENGTH_SHORT).show();
                 BasicDBList list = (BasicDBList) JSON.parse(response.body().string());
                 for (int i = 0; i < list.size(); i++) {
                     BasicDBObject entry = (BasicDBObject) list.get(i);
