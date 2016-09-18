@@ -58,7 +58,7 @@ public class VaultListActivity extends AppCompatActivity {
 
         // important variable; will need to be accessed in other activities too
         Constants.userLocation = LocationServices.getLocationServices(this).getLastLocation();
-        testAdapter();
+//        testAdapter();
     }
 
     private void testAdapter() {
@@ -70,7 +70,7 @@ public class VaultListActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        // mAdapter.onPause();
+//        mAdapter.onPause();
         super.onPause();
     }
 
@@ -104,12 +104,12 @@ public class VaultListActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-                e.printStackTrace();
+
             }
 
             @Override
             public void onResponse(Response response) throws IOException {
-                // Toast.makeText(VaultListActivity.this, "got response", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(VaultListActivity.this, "got response", Toast.LENGTH_SHORT).show();
                 BasicDBList list = (BasicDBList) JSON.parse(response.body().string());
                 for (int i = 0; i < list.size(); i++) {
                     BasicDBObject entry = (BasicDBObject) list.get(i);
@@ -127,6 +127,7 @@ public class VaultListActivity extends AppCompatActivity {
                         mRecyclerView.setLayoutManager(new LinearLayoutManager(VaultListActivity.this));
                         mAdapter.onCreate(savedInstance);
                         mAdapter.onResume();
+
                     }
                 });
 
