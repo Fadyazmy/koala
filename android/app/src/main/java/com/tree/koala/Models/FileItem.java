@@ -20,7 +20,7 @@ public class FileItem extends AbstractItem<FileItem, FileItem.ViewHolder> {
 
 
 
-  FileItem (String name, String type) {
+  public FileItem(String name, String type) {
     this.name = name;
     this.type = type;
   }
@@ -40,11 +40,11 @@ public class FileItem extends AbstractItem<FileItem, FileItem.ViewHolder> {
     super.bindView(holder, payloads);
 
     holder.fileName.setText(name);
-    holder.fileType.setText(type);
+//    holder.fileType.setText(type);
   }
 
   //The viewHolder used for this item. This viewHolder is always reused by the RecyclerView so scrolling is blazing fast
-  protected static class ViewHolder extends RecyclerView.ViewHolder {
+  public static class ViewHolder extends RecyclerView.ViewHolder {
     protected ImageView fileIcon;
     protected TextView fileName;
     protected TextView fileType;

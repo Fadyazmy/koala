@@ -82,13 +82,15 @@ public class VaultListActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mAdapter.onDestroy();
+        if (mAdapter != null)
+            mAdapter.onDestroy();
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
-        mAdapter.onLowMemory();
+        if (mAdapter != null)
+            mAdapter.onLowMemory();
     }
 
     public void setupViews(final Bundle savedInstance) {
@@ -104,7 +106,8 @@ public class VaultListActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Request request, IOException e) {
-
+                e.getMessage();
+                e.printStackTrace();
             }
 
             @Override

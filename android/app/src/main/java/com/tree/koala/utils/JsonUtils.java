@@ -56,7 +56,7 @@ public class JsonUtils {
       jsonObject.put("username", username);
       jsonObject.put("filename", fileName);
       jsonObject.put("location", location.getLatitude() + "|" + location.getLongitude());
-      jsonObject.put("url", fileData);
+      jsonObject.put("url", Base64.encodeToString(fileData, 2));
       jsonObject.put("data", type);
 
       OkHttpClient client = new OkHttpClient();

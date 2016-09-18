@@ -23,6 +23,7 @@ import com.squareup.okhttp.Callback;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import com.tree.koala.Models.FileItem;
 import com.tree.koala.Models.VaultFile;
 import com.tree.koala.R;
 import com.tree.koala.utils.Constants;
@@ -83,7 +84,7 @@ public class BrowseVaultActivity extends AppCompatActivity {
   private void setupList() {
     OkHttpClient client = new OkHttpClient();
 
-    final ArrayList<VaultFile> vaultFiles = new ArrayList<>();
+    final ArrayList<FileItem> vaultFiles = new ArrayList<>();
 
     final Request request = new Request.Builder()
             .url(Constants.FETCH_DATA_ENDPOINT)
@@ -150,26 +151,31 @@ public class BrowseVaultActivity extends AppCompatActivity {
 
   public String getFilename(Uri uri) {
     String fileName = null;
-    Context context=getApplicationContext();
-    String scheme = uri.getScheme();
-    if (scheme.equals("file")) {
+    if (uri.getScheme().equals("file")) {
       fileName = uri.getLastPathSegment();
-    }
-    else if (scheme.equals("content")) {
-      String[] proj = { MediaStore.Video.Media.TITLE };
-      Uri contentUri = uri;
-      Cursor cursor = context.getContentResolver().query(uri, proj, null, null, null);
-      if (cursor != null && cursor.getCount() != 0) {
-        int columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
-        cursor.moveToFirst();
-        fileName = cursor.getString(columnIndex);
+    } else {
+      Cursor cursor = null;
+      try {
+        cursor = getContentResolver().query(uri, new String[]{
+                MediaStore.Images.ImageColumns.DISPLAY_NAME
+        }, null, null, null);
+
+        if (cursor != null && cursor.moveToFirst()) {
+          fileName = cursor.getString(cursor.getColumnIndex(MediaStore.Images.ImageColumns.DISPLAY_NAME));
+          Log.d(TAG, "name is " + fileName);
+        }
+      } finally {
+
+        if (cursor != null) {
+          cursor.close();
+        }
       }
     }
     return fileName;
   }
 
-  public VaultFile entryToVaultFile(BasicDBObject entry) {
-    VaultFile file = new VaultFile(entry.getString("filename"), (byte[]) entry.get("url"));
-    return file;
+  public FileItem entryToVaultFile(BasicDBObject entry) {
+    FileItem item = new FileItem(entry.getString("filename"), entry.getString("data"));
+    return item;
   }
 }
