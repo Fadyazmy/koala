@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
@@ -27,6 +28,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.tree.koala.R;
 import com.tree.koala.utils.Constants;
+import com.tree.koala.utils.JsonUtils;
 
 import java.io.IOException;
 import java.util.List;
@@ -45,6 +47,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
   private MapboxMap mMapboxMap;
   private Location mVaultLocation;
   private TextView mAddressView;
+  private EditText mVaultText;
   public static final int PERMISSION_REQ_CODE = 0;
 
   private LocationServices mLocationServices;
@@ -67,6 +70,7 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
     }
 
     mLocationServices = LocationServices.getLocationServices(this);
+    mVaultText = (EditText) findViewById(R.id.vault_name_text);
     mAddressView = (TextView) findViewById(R.id.address_text);
     mMapView = (MapView) findViewById(R.id.create_vault_map);
     mMapView.onCreate(savedInstanceState);
@@ -82,7 +86,16 @@ public class CreateVaultActivity extends AppCompatActivity implements OnMapReady
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    return super.onOptionsItemSelected(item);
+    switch (item.getItemId()) {
+      case R.id.action_submit: {
+        String vaultName = mVaultText.getText().toString();
+        Location location = Constants.userLocation;
+        final String username = "jashans";
+        byte[] data = new byte[1]; // empty byte[] denotes data for vault
+        JsonUtils.insertRecord(username, "*" + vaultName, location, data, "");
+      }
+    }
+    return true;
   }
 
   @Override

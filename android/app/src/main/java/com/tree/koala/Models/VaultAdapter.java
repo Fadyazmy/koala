@@ -1,6 +1,7 @@
 package com.tree.koala.Models;
 
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mapbox.mapboxsdk.MapboxAccountManager;
 import com.mapbox.mapboxsdk.annotations.MarkerOptions;
@@ -21,6 +23,7 @@ import com.mapbox.mapboxsdk.location.LocationServices;
 import com.mapbox.mapboxsdk.maps.MapView;
 import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
+import com.tree.koala.Controllers.BrowseVaultActivity;
 import com.tree.koala.R;
 import com.tree.koala.utils.Constants;
 import com.tree.koala.utils.LocationUtils;
@@ -44,12 +47,6 @@ public class VaultAdapter extends RecyclerView.Adapter<VaultAdapter.ViewHolder> 
         MapboxAccountManager.start(mContext, Constants.mapboxToken);
         mContext = context;
         mVaults = vaults;
-        mVaults.sort(new Comparator<Vault>() {
-            @Override
-            public int compare(Vault v1, Vault v2) {
-                return v1.getVaultName().compareTo(v2.getVaultName());
-            }
-        });
         mViewHolders = new ArrayList<>();
     }
 
@@ -75,7 +72,20 @@ public class VaultAdapter extends RecyclerView.Adapter<VaultAdapter.ViewHolder> 
         final Vault item = mVaults.get(position);
         holder.titleText.setText(item.getVaultName());
         holder.vaultLoc = mVaults.get(position).getLocation();
+
         Constants.userLocation = LocationServices.getLocationServices(mContext).getLastLocation();
+        holder.titleText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (LocationUtils.distanceBetween(item.getLocation(), Constants.userLocation) > 30) {
+                    Toast.makeText(mContext, "You're too far away from your vault", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Intent intent = new Intent(mContext, BrowseVaultActivity.class);
+                intent.putExtra("vault_title", item.getVaultName());
+                mContext.startActivity(intent);
+            }
+        });
         if (Constants.userLocation == null) {
             holder.descriptionText.setText(String.format("%d files", item.getVaultFiles().size()));
         } else {

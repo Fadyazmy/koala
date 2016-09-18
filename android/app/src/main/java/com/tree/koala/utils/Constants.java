@@ -14,6 +14,9 @@ public class Constants {
   public static String mapboxToken = "pk.eyJ1IjoiamFzaGFuczk4IiwiYSI6ImNpdDc4YXJ1YTA3YW8yenAxZDRiM3I1dWIifQ.9cdUHw7KF4w06f2c0VFs7w";
   public static Location userLocation = null;
 
+  public static final String INSERT_VAULT_ENDPOINT = "http://146.148.84.104:80/api/insert";
+  public static final String FETCH_DATA_ENDPOINT = "http://146.148.84.104:80/api/fetch";
+
   public static ArrayList<Vault> getVaultList() {
     Location vaultLoc = new Location("");
     vaultLoc.setLatitude(43.464258);

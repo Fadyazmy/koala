@@ -36,5 +36,5 @@ dependencies {
         transitive=true
     }
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
-
+    compile 'org.mongodb:mongodb-driver:3.3.0'
 }
